@@ -1,27 +1,23 @@
 <?php
-
-
-$currency = @$_GET['currency'] ? htmlspecialchars($_GET['currency']) : 'usd';
 include_once('./bitfinex.php');
 include_once('./lib/indicators.php');
 
-$coin = "XLM";
-$bfx = new Bitfinex($config['api_key'], $config['api_secret']);
+$qry_str = "?fsym=BTC&tsyms=USD&ts=1452680400";
+$ch = curl_init();
 
-$message = "No update";
+// Set query data here with the URL
+curl_setopt($ch, CURLOPT_URL, 'https://min-api.cryptocompare.com/data/pricehistorical' . $qry_str);
+
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:7.0.1) Gecko/20100101 Firefox/7.0.1');
+$content = json_decode(trim(curl_exec($ch)));
+curl_close($ch);
+
+var_dump($content);
+
 
 if (calculate_rsi() < 50 || calculate_macd() > 0)
 {
   $message = "Good time to sell: " . $coin . "\n";
-}
-
-
-// Send email notification to buy/sell
-$to = "s.jay882@gmail.com";
-$subject = "Hi!";
-$body = "Hi,\n\nHow are you?";
-if (mail($to, $subject, $body)) {
-echo("<p>Email successfully sent!</p>");
-} else {
-echo("<p>Email delivery failed…</p>");
 }
