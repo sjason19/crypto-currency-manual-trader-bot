@@ -26,6 +26,7 @@ function calculate_rsi($data) {
   }
 
   // Calculate Upward/Downward Movement
+  echo "CALCULATING UPWARD/DOWNWARD MOVEMENT... \n";
   for($i=0; $i<23; $i++)
   {
     $prev = $i - 1;
@@ -33,15 +34,16 @@ function calculate_rsi($data) {
     {
       $upward_movement[] = $closing_prices[$i] - $closing_prices[$prev];
       $downward_movement[] = 0;
-      echo $upward_movement[$i] . "   " . $downward_movement[$i] . "\n";
+      echo round($upward_movement[$i], 2) . "      " . round($downward_movement[$i], 2) . "\n";
     }
     else
     {
       $downward_movement[] = $closing_prices[$prev] - $closing_prices[$i];
       $upward_movement[] = 0;
-      echo $upward_movement[$i] . "   " . $downward_movement[$i] . "\n";
+      echo round($upward_movement[$i], 2) . "      " . round($downward_movement[$i], 2) . "\n";
     }
   }
+  echo "\n";
 
 
   // Array's containing last 10 elements of upward/downard movement
@@ -50,7 +52,7 @@ function calculate_rsi($data) {
 
   $avg_upward_movement[] = array_sum($um_14) / 14;
   $avg_downward_movement[] = array_sum($dm_14) / 14;
-
+  echo "CALCULATING AVERAGE UPWARD/DOWNWARD TREND... \n";
   for($i=1; $i<11; $i++)
   {
     $prev = $i - 1;
@@ -62,18 +64,21 @@ function calculate_rsi($data) {
     $avg_downward_movement[] = ($dm_c1 + $dm_c2) / 14;
     echo $avg_upward_movement[$prev] . "   " . $avg_downward_movement[$prev] . "\n";
   }
+  echo "\n";
 
+  echo "CALCULATING RELATIVE STRENGTH...\n";
   for($i=0; $i<10; $i++)
   {
     $relative_strength[] = $avg_upward_movement[$i] / $avg_downward_movement[$i];
     echo $relative_strength[$i] . "\n";
   }
+  echo "\n";
 
   // calculate RSI
   $rsi = 100 - (100 / ($relative_strength[9] + 1));
 
 
-  return 49;
+  return $rsi;
 }
 
 /**
