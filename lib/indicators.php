@@ -17,7 +17,7 @@ function calculate_rsi($data) {
   $closing_prices = $upward_movement = $downward_movement = $avg_upward_movement = $avg_downward_movement = $relative_strength = [];
 
   // Append all closing_price data to an array in the past 14 days
-  for($i=7; $i<=30; $i++)
+  for($i=77; $i<=100; $i++)
   {
     $closing_prices[] = $data["Data"][$i]["close"];
   }
@@ -87,9 +87,9 @@ function calculate_rsi($data) {
 */
 function calculate_macd($data) {
   $EMA_PARAMS = [12, 26, 9];
-  $ema_factor = $slow_ema = $fast_ema = $difference = $signal = $closing_prices = [];
+  $ema_factor = $slow_ema = $fast_ema = $macd = $signal = $closing_prices = $ema_9 = [];
 
-  for($i=0; $i<=27; $i++)
+  for($i=0; $i<=100; $i++)
   {
     $closing_prices[] = $data["Data"][$i]["close"];
   }
@@ -103,30 +103,117 @@ function calculate_macd($data) {
   $t_day_avg = array_sum(array_slice($closing_prices, 0, 12)) / $EMA_PARAMS[0];
   $ts_day_avg = array_sum(array_slice($closing_prices, 0, 26)) / $EMA_PARAMS[1];
 
+  for ($i=0; $i<88; $i++)
+  {
+    $slow_ema[] = (($closing_prices[$i+12] - $t_day_avg) * $ema_factor[0]) + $t_day_avg;
+    echo "slow_ema: " . $slow_ema[$i] . "\n";
+  }
 
+  for ($i=0; $i<74; $i++)
+  {
+    $fast_ema[] = (($closing_prices[$i+26] - $t_day_avg) * $ema_factor[1]) + $ts_day_avg;
+    echo "fast_ema: " . $fast_ema[$i] . "\n";
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  for($i=0; $i<74; $i++)
+  {
+    $macd[] = ($slow_ema[$i+13] - $fast_ema[$i]);
+    echo "macd: " . $macd[$i] . "\n";
+  }
   return 1;
+}
+
+/**
+* Calculate Moving average convergence divergence (MACD)
+*
+* Function to calculate the Moving average convergence divergence (MACD)
+*
+* @return mixed
+*/
+function calculate_macd_test($data) {
+  $EMA_PARAMS = [12, 26, 9];
+  $ema_factor = $slow_ema = $fast_ema = $macd = $signal = $closing_prices = $ema_9 = [];
+
+  for($i=0; $i<=100; $i++)
+  {
+    $closing_prices[] = $data["Data"][$i]["close"];
+  }
+
+    $slow_ema[] = calculateEMA($closing_prices, $EMA_PARAMS[0], sizeof($closing_prices) - 1);
+    $fast_ema[] = calculateEMA($closing_prices, $EMA_PARAMS[1], sizeof($closing_prices) - 1);
+
+  for ($i=0; $i<74; $i++)
+  {
+    $fast_ema[] = (($closing_prices[$i+26] - $t_day_avg) * $ema_factor[1]) + $ts_day_avg;
+    echo "fast_ema: " . $fast_ema[$i] . "\n";
+  }
+
+  for($i=0; $i<74; $i++)
+  {
+    $macd[] = ($slow_ema[$i+13] - $fast_ema[$i]);
+    echo "macd: " . $macd[$i] . "\n";
+  }
+  return 1;
+}
+
+/**
+* Calculate Exponential Moving Average
+*
+* Function to calculate the Exponential Moving Average
+*
+* @return integer
+*/
+function calculateEMA($data, $emaParam, $priceIndex)
+{
+  $ema = [];
+  $alpha = calculateFactor($emaParam);
+
+  if($priceIndex < sizeof($data))
+  {
+    if($priceIndex > $emaParam - 1)
+    {
+      if($priceIndex > - 1)
+      {
+        calculateEMA($data, $emaParam - 1, $priceIndex);
+
+        $ema[] = ($data[$priceIndex] * $alpha) + ($ema[$priceIndex-1] * (1 - $alpha));
+      }
+    }
+    elseif ($priceIndex == $emaParam - 1)
+    {
+      $sma = calculateSMA($data, $emaParam);
+
+      if($sma != false)
+      {
+        $ema[] = $sma;
+        $result = $sma;
+      }
+      else
+      {
+        $ema[] = 0;
+      }
+    }
+  }
+  return $ema;
+}
+
+/**
+* Calculate the Simple Moving Average
+*
+* Function to calculate the Simple Moving Average
+*
+* @return integer
+*/
+function calculateSMA($data, $emaParam)
+{
+  $sum = 0;
+
+  for($i=$emaParam; $i>-1; $i--)
+  {
+    $sum += $data[$i];
+  }
+
+  return $sum / $emaParam;
 }
 
 /**
@@ -136,10 +223,11 @@ function calculate_macd($data) {
 *
 * @return integer
 */
-function calculateFactor($ema_param)
+function calculateFactor($emaParam)
 {
-  return 2 / ($ema_param + 1);
+  return 2 / ($emaParam + 1);
 }
+
 
 
 

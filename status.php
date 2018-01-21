@@ -3,13 +3,13 @@ include_once('./bitfinex.php');
 include_once('./lib/indicators.php');
 include_once('./security.php');
 
-$coin = "XRP";
+$coin = "ETH";
 $phone = getPhone();
 $virtual = getVirtual();
 $API_URL_HIST = "https://min-api.cryptocompare.com/data/histoday";
 $API_URL_PRICE = "https://min-api.cryptocompare.com/data/price";
 
-$qry_str_rsi = "?fsym=$coin&tsym=BTC&limit=30&e=CCCAGG";
+$qry_str_rsi = "?fsym=$coin&tsym=BTC&limit=100&e=CCCAGG";
 $ch = curl_init();
 
 // Fetch Coin Information
