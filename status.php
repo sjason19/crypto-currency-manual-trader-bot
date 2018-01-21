@@ -65,12 +65,14 @@ else
   // SMS alert
   $api_key = getKey();
   $api_secret = getSecret();
+  $virtual = getVirtual();
+
   $ch = curl_init();
 
   curl_setopt($ch, CURLOPT_URL,"https://rest.nexmo.com/sms/json");
   curl_setopt($ch, CURLOPT_POST, 1);
   curl_setopt($ch, CURLOPT_POSTFIELDS,
-              "api_key=$api_key&api_secret=$api_secret&to=1$phone&from=12262101784&text=$message");
+              "api_key=$api_key&api_secret=$api_secret&to=1$phone&from=1$virtual&text=$message");
 
   // receive server response ...
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
