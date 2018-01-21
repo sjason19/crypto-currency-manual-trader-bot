@@ -3,13 +3,13 @@ include_once('./bitfinex.php');
 include_once('./lib/indicators.php');
 include_once('./security.php');
 
-$coin = "XRP";
+$coin = "BTC";
 $phone = getPhone();
 $virtual = getVirtual();
 $API_URL_HIST = "https://min-api.cryptocompare.com/data/histoday";
 $API_URL_PRICE = "https://min-api.cryptocompare.com/data/price";
 
-$qry_str_rsi = "?fsym=$coin&tsym=BTC&limit=30&e=CCCAGG";
+$qry_str_rsi = "?fsym=$coin&tsym=USD&limit=5&e=Bitfinex";
 $ch = curl_init();
 
 // Fetch Coin Information
@@ -31,6 +31,9 @@ echo "RSI: " . $rsi . "\n";
 $macd = calculate_macd($content);
 echo "MACD: " . $macd . "\n";
 
+// ***** CALCUATING OBV ******
+$obv = calculate_obv($content);
+echo "OBV: " . $obv . "\n";
 
 
 // Fetch Coin price

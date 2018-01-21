@@ -102,30 +102,6 @@ function calculate_macd($data) {
   // 12 and 26 day moving avg
   $t_day_avg = array_sum(array_slice($closing_prices, 0, 12)) / $EMA_PARAMS[0];
   $ts_day_avg = array_sum(array_slice($closing_prices, 0, 26)) / $EMA_PARAMS[1];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   return 1;
 }
 
@@ -141,6 +117,31 @@ function calculateFactor($ema_param)
   return 2 / ($ema_param + 1);
 }
 
+/**
+* Calculate OBV
+*
+* Function to calculate the RSI (Relative Strength Index)
+*
+* @param string $data    Historical close pricing data
+* @return mixed
+*/
+$CURRENT_CLOSE = 0;
 
-
- ?>
+function calculate_obv($data) {
+  function obv($carry, $item) {
+    global $CURRENT_CLOSE;
+    if ($CURRENT_CLOSE == 0) {
+      $CURRENT_CLOSE = $item["close"];
+      $carry = 0;
+    }
+    if ($item["close"] == $CURRENT_CLOSE) {
+      $CURRENT_CLOSE = $item["close"];
+      return $carry;
+    }
+    ($item["close"] > $CURRENT_CLOSE) ? $carry += $item["volumefrom"] : $carry -= $item["volumefrom"];
+    $CURRENT_CLOSE = $item["close"];
+    return $carry;
+  }
+  return array_reduce($data["Data"], "obv");
+}
+?>
