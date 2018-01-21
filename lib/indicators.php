@@ -3,6 +3,8 @@
 // a separate file for debugging purposes.
 // This will include dummy data for the meantime
 
+$SHIFT_PARAM = 7;
+
 /**
 * Calculate RSI
 *
@@ -88,7 +90,37 @@ function calculate_rsi($data) {
 *
 * @return mixed
 */
-function calculate_macd() {
+function calculate_macd($data) {
+  $FAST_EMA_PARAM = 12;
+  $SLOW_EMA_PRAAM = 26;
+  $SIGMAL_PARAM = 9;
+  $fast_ema = [];
+  $slow_ema = [];
+  $difference = [];
+  $signal = [];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   return 1;
 }
 
