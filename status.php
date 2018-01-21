@@ -66,6 +66,8 @@ else
   // SMS alert
   $api_key = getKey();
   $api_secret = getSecret();
+  $virtual = getVirtual();
+
   $ch = curl_init();
 
   curl_setopt($ch, CURLOPT_URL,"https://rest.nexmo.com/sms/json");
