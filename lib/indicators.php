@@ -14,15 +14,10 @@ $SHIFT_PARAM = 7;
 * @return mixed
 */
 function calculate_rsi($data) {
-  $closing_prices = [];
-  $upward_movement = [];
-  $downward_movement = [];
-  $avg_upward_movement = [];
-  $avg_downward_movement = [];
-  $relative_strength = [];
+  $closing_prices = $upward_movement = $downward_movement = $avg_upward_movement = $avg_downward_movement = $relative_strength = [];
 
   // Append all closing_price data to an array in the past 14 days
-  for($i=0; $i<=23; $i++)
+  for($i=7; $i<=30; $i++)
   {
     $closing_prices[] = $data["Data"][$i]["close"];
   }
@@ -91,13 +86,23 @@ function calculate_rsi($data) {
 * @return mixed
 */
 function calculate_macd($data) {
-  $FAST_EMA_PARAM = 12;
-  $SLOW_EMA_PRAAM = 26;
-  $SIGMAL_PARAM = 9;
-  $fast_ema = [];
-  $slow_ema = [];
-  $difference = [];
-  $signal = [];
+  $EMA_PARAMS = [12, 26, 9];
+  $ema_factor = $slow_ema = $fast_ema = $difference = $signal = $closing_prices = [];
+
+  for($i=0; $i<=27; $i++)
+  {
+    $closing_prices[] = $data["Data"][$i]["close"];
+  }
+
+  for($i=0; $i<3; $i++)
+  {
+    $ema_factor[] = calculateFactor($EMA_PARAMS[$i]);
+  }
+
+  // 12 and 26 day moving avg
+  $t_day_avg = array_sum(array_slice($closing_prices, 0, 12)) / $EMA_PARAMS[0];
+  $ts_day_avg = array_sum(array_slice($closing_prices, 0, 26)) / $EMA_PARAMS[1];
+
 
 
 
@@ -124,6 +129,17 @@ function calculate_macd($data) {
   return 1;
 }
 
+/**
+* Calculate Exponential Moving Average Factor
+*
+* Function to calculate the Exponential Moving Average Factor
+*
+* @return integer
+*/
+function calculateFactor($ema_param)
+{
+  return 2 / ($ema_param + 1);
+}
 
 
 

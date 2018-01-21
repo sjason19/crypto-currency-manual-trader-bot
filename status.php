@@ -8,12 +8,11 @@ $phone = getPhone();;
 $API_URL_HIST = "https://min-api.cryptocompare.com/data/histoday";
 $API_URL_PRICE = "https://min-api.cryptocompare.com/data/price";
 
-// ***** CALCUATING RSI ******
-$qry_str = "?fsym=$coin&tsym=BTC&limit=23&e=CCCAGG";
+$qry_str_rsi = "?fsym=$coin&tsym=BTC&limit=30&e=CCCAGG";
 $ch = curl_init();
 
 // Fetch Coin Information
-curl_setopt($ch, CURLOPT_URL, $API_URL_HIST . $qry_str);
+curl_setopt($ch, CURLOPT_URL, $API_URL_HIST . $qry_str_rsi);
 
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($ch, CURLOPT_TIMEOUT, 3);
@@ -23,37 +22,23 @@ curl_close($ch);
 
 $content = json_decode($content, true);
 
+// ***** CALCUATING RSI ******
 $rsi = calculate_rsi($content);
 echo "RSI: " . $rsi . "\n";
 
-
 // ***** CALCUATING MACD ******
-$qry_str = "?fsym=$coin&tsym=BTC&limit=30&e=CCCAGG";
-$ch = curl_init();
-
-// Fetch Coin Information
-curl_setopt($ch, CURLOPT_URL, $API_URL_HIST . $qry_str);
-
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_TIMEOUT, 3);
-curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:7.0.1) Gecko/20100101 Firefox/7.0.1');
-$content = trim(curl_exec($ch));
-curl_close($ch);
-
-$content = json_decode($content, true);
-
 $macd = calculate_macd($content);
 echo "MACD: " . $macd . "\n";
 
 
 
 // Fetch Coin price
-$qry_str = "?fsym=$coin&tsyms=USD";
+$qry_str_price = "?fsym=$coin&tsyms=USD";
 $ch = curl_init();
-echo "COIN PRICE API: $API_URL_PRICE" . $qry_str . "\n";
+echo "COIN PRICE API: $API_URL_PRICE" . $qry_str_price . "\n";
 
 // Fetch Coin Information
-curl_setopt($ch, CURLOPT_URL, $API_URL_PRICE . $qry_str);
+curl_setopt($ch, CURLOPT_URL, $API_URL_PRICE . $qry_str_price);
 
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($ch, CURLOPT_TIMEOUT, 3);
