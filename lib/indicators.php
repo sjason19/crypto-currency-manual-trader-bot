@@ -3,8 +3,6 @@
 // a separate file for debugging purposes.
 // This will include dummy data for the meantime
 
-$SHIFT_PARAM = 7;
-
 /**
 * Calculate RSI
 *
@@ -119,7 +117,7 @@ function calculate_macd($data, $EMA_PARAMS) {
 //    echo "diff: " . $diff[$i] . "\n";
   }
 
-  // Calculate the Signal line
+  // Calculate the Signal Line
   // First Index of Signal Line is the average of the difference between fast - slow ema
   $ema_9[0] = array_sum(array_slice($diff, 0, $EMA_PARAMS[2])) / $EMA_PARAMS[2];
 
