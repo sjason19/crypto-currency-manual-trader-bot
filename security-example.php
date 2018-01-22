@@ -1,19 +1,30 @@
 <?php
 
 function getKey() {
-    return "";
+    return "Insert Key";
 }
 
 function getSecret() {
-    return "";
+    return "Insert Secret";
 }
 
 function getPhone() {
-    return "";
+    return "Your 10 digit phone number";
 }
 
 function getVirtual() {
-    return "";
+    return "Insert Virtual Phone Number given by NEXMO API";
+}
+
+function getCoins() {
+  // You can compare as many coins as you like
+  $coins = ["Insert Ticker Here", "Insert Ticker Here", "Insert Ticker Here"];
+  return $coins;
+}
+
+function getCompareCoinTo() {
+  $coin = "Insert Ticker Here";
+  return $coin;
 }
 
 ?>
