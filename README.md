@@ -18,6 +18,13 @@ In your console run:
 git clone https://github.com/sjason19/crypto-currency-manual-trader-bot.git
 cd crypto-currency-manual-trader-bot
 ```
+
+Install dependencies with Composer
+```
+curl -sS https://getcomposer.org/installer | php 
+php composer.phar install
+```
+
 Now time to set up your configurations and API keys:
 ```
 cp security-example.php security.php
