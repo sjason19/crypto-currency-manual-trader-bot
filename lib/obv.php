@@ -2,7 +2,7 @@
 /**
 * Calculate OBV
 *
-* Function to calculate the RSI (Relative Strength Index)
+* Function to calculate the OBV (On Balance Volume)
 *
 * @param string $data    Historical close pricing data
 * @return mixed
@@ -14,7 +14,7 @@ function calculate_obv($data) {
     global $CURRENT_CLOSE;
     if ($CURRENT_CLOSE == 0) {
       $CURRENT_CLOSE = $item["close"];
-      $carry -= $item["volumefrom"];
+      $carry = 0;
       return $carry;
     }
     if ($item["close"] == $CURRENT_CLOSE) return $carry;
