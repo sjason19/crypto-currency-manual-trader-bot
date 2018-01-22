@@ -1,7 +1,6 @@
 <?php
 require 'vendor/autoload.php';
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
 
 include_once('./bitfinex.php');
 include_once('./lib/macd.php');
@@ -72,31 +71,32 @@ else
   $api_key = getKey();
   $api_secret = getSecret();
   $virtual = getVirtual();
+  $NEXMO_URL = 'https://rest.nexmo.com/sms/json';
 
   // First Indicator Message
-  $ch = curl_init();
 
-  curl_setopt($ch, CURLOPT_URL,"https://rest.nexmo.com/sms/json");
-  curl_setopt($ch, CURLOPT_POST, 1);
-  curl_setopt($ch, CURLOPT_POSTFIELDS,
-              "api_key=$api_key&api_secret=$api_secret&to=1$phone&from=1$virtual&text=$message");
-
-  // receive server response ...
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  $server_output = curl_exec ($ch);
+  $client = new Client();
+  
+  $response = $client->post($NEXMO_URL, [
+    GuzzleHttp\RequestOptions::JSON => [
+      'api_key' => $api_key,
+      'api_secret' => $api_secret,
+      'to' => '1' . $phone,
+      'from' => '1' . $virtual,
+      'text' => $message
+      ]
+  ]);
 
   sleep(1);
-
-  curl_setopt($ch, CURLOPT_URL,"https://rest.nexmo.com/sms/json");
-  curl_setopt($ch, CURLOPT_POST, 1);
-  curl_setopt($ch, CURLOPT_POSTFIELDS,
-              "api_key=$api_key&api_secret=$api_secret&to=1$phone&from=1$virtual&text=$message1");
-
-  // receive server response ...
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  $server_output = curl_exec ($ch);
-
-  curl_close ($ch);
-
+  
+  $response = $client->post($NEXMO_URL, [
+    GuzzleHttp\RequestOptions::JSON => [
+      'api_key' => $api_key,
+      'api_secret' => $api_secret,
+      'to' => '1' . $phone,
+      'from' => '1' . $virtual,
+      'text' => $message1
+      ]
+  ]);
 
 ?>
