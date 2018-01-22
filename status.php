@@ -28,10 +28,8 @@ $rsi = calculate_rsi($content);
 echo "RSI: " . $rsi . "\n";
 
 // ***** CALCUATING MACD ******
-$macd = calculate_macd($content);
+$macd = calculate_macd($content, $EMA_PARAMS = [12, 26, 9]);
 echo "MACD: " . $macd . "\n";
-
-
 
 // Fetch Coin price
 $qry_str_price = "?fsym=$coin&tsyms=USD";
@@ -51,11 +49,13 @@ $content = json_decode($content, true);
 $price = $content["USD"];
 echo "PRICE: " . $price . "\n";
 
-if ($rsi < 30)
+// Buy if RSI < 30 AND MACD == 1
+// Sell if RSI > 60 MACD == 0
+if ($rsi < 30 && $macd == 1)
 {
   $message = "Indicators showing good signals to buy: " . $coin . " ($" . $price . ")" . "\n";
 }
-else if ($rsi > 60)
+else if ($rsi > 60 && $macd == 0)
 {
   $message = "Indicators showing good signals to sell: " . $coin . " ($" . $price . ")" . "\n";
 }

@@ -74,7 +74,6 @@ function calculate_rsi($data) {
   // calculate RSI
   $rsi = 100 - (100 / ($relative_strength[9] + 1));
 
-
   return $rsi;
 }
 
@@ -83,77 +82,72 @@ function calculate_rsi($data) {
 *
 * Function to calculate the Moving average convergence divergence (MACD)
 *
-* @return mixed
+* @return integer
 */
-function calculate_macd($data) {
-  $EMA_PARAMS = [12, 26, 9];
-  $ema_factor = $slow_ema = $fast_ema = $macd = $signal = $closing_prices = $ema_9 = [];
+function calculate_macd($data, $EMA_PARAMS) {
+  $ema_factor = $slow_ema = $fast_ema = $macd = $closing_prices = $diff = $ema_9 = $hist = [];
 
   for($i=0; $i<=100; $i++)
   {
     $closing_prices[] = $data["Data"][$i]["close"];
   }
 
+  // Initialize EMA Multiplying Factors
   for($i=0; $i<3; $i++)
   {
     $ema_factor[] = calculateFactor($EMA_PARAMS[$i]);
   }
 
-  // 12 and 26 day moving avg
-  $t_day_avg = array_sum(array_slice($closing_prices, 0, 12)) / $EMA_PARAMS[0];
-  $ts_day_avg = array_sum(array_slice($closing_prices, 0, 26)) / $EMA_PARAMS[1];
+  // Calculate 12 and 26 day exponential moving average
+  $fast_ema[0] = array_sum(array_slice($closing_prices, 0, $EMA_PARAMS[0])) / $EMA_PARAMS[0];
+  $slow_ema[0] = array_sum(array_slice($closing_prices, 0, $EMA_PARAMS[1])) / $EMA_PARAMS[1];
 
-  for ($i=0; $i<88; $i++)
+  for ($i=1; $i<sizeof($closing_prices)-$EMA_PARAMS[0]; $i++)
   {
-    $slow_ema[] = (($closing_prices[$i+12] - $t_day_avg) * $ema_factor[0]) + $t_day_avg;
-    echo "slow_ema: " . $slow_ema[$i] . "\n";
+    $prev = $i-1;
+    $fast_ema[] = (($closing_prices[$i+$EMA_PARAMS[0]] - $fast_ema[$prev]) * $ema_factor[0]) + $fast_ema[$prev];
+    if ($i<sizeof($closing_prices)-$EMA_PARAMS[1])
+    {
+      $slow_ema[] = (($closing_prices[$i+$EMA_PARAMS[1]] - $slow_ema[$prev]) * $ema_factor[1]) + $slow_ema[$prev];
+    }
   }
 
-  for ($i=0; $i<74; $i++)
+  // Calculate the difference between the 12 day and 26 day expoential moving averages
+  for($i=0; $i<sizeof($closing_prices)-$EMA_PARAMS[1]; $i++)
   {
-    $fast_ema[] = (($closing_prices[$i+26] - $t_day_avg) * $ema_factor[1]) + $ts_day_avg;
-    echo "fast_ema: " . $fast_ema[$i] . "\n";
+    $diff[] = ($fast_ema[$i+$EMA_PARAMS[1]-$EMA_PARAMS[0]] - $slow_ema[$i]);
+//    echo "diff: " . $diff[$i] . "\n";
   }
 
-  for($i=0; $i<74; $i++)
+  // Calculate the Signal line
+  // First Index of Signal Line is the average of the difference between fast - slow ema
+  $ema_9[0] = array_sum(array_slice($diff, 0, $EMA_PARAMS[2])) / $EMA_PARAMS[2];
+
+  for($i=1; $i<sizeof($diff)-$EMA_PARAMS[2]; $i++)
   {
-    $macd[] = ($slow_ema[$i+13] - $fast_ema[$i]);
-    echo "macd: " . $macd[$i] . "\n";
+    $prev = $i-1;
+    $ema_9[$i] = (($diff[$EMA_PARAMS[2] + $i] - $ema_9[$prev]) * $ema_factor[2]) + $ema_9[$prev];
+  // echo "ema_9: " . $ema_9[$prev] . "\n";
   }
-  return 1;
-}
+  // echo "ema_9: " . $ema_9[sizeof($ema_9)-1] . "\n";
 
-/**
-* Calculate Moving average convergence divergence (MACD)
-*
-* Function to calculate the Moving average convergence divergence (MACD)
-*
-* @return mixed
-*/
-function calculate_macd_test($data) {
-  $EMA_PARAMS = [12, 26, 9];
-  $ema_factor = $slow_ema = $fast_ema = $macd = $signal = $closing_prices = $ema_9 = [];
-
-  for($i=0; $i<=100; $i++)
+  for($i=0; $i<=sizeof($diff)-$EMA_PARAMS[2]; $i++)
   {
-    $closing_prices[] = $data["Data"][$i]["close"];
+    $hist[] = $diff[$i + $EMA_PARAMS[2] - 1] - $ema_9[$i-1];
+    echo "macd_hist: " . $hist[$i] . "\n";
   }
 
-    $slow_ema[] = calculateEMA($closing_prices, $EMA_PARAMS[0], sizeof($closing_prices) - 1);
-    $fast_ema[] = calculateEMA($closing_prices, $EMA_PARAMS[1], sizeof($closing_prices) - 1);
-
-  for ($i=0; $i<74; $i++)
+  if($hist[sizeof($hist)-1] > 0 && $hist[sizeof($hist)-2] < 0)
   {
-    $fast_ema[] = (($closing_prices[$i+26] - $t_day_avg) * $ema_factor[1]) + $ts_day_avg;
-    echo "fast_ema: " . $fast_ema[$i] . "\n";
+    // Buy if MACD - Signal > 0
+    // echo "current hist: " . $hist[sizeof($hist)-1] . " > 0 && " . $hist[sizeof($hist)-2] . " < 0" . "\n";
+    return 1;
   }
-
-  for($i=0; $i<74; $i++)
+  else
   {
-    $macd[] = ($slow_ema[$i+13] - $fast_ema[$i]);
-    echo "macd: " . $macd[$i] . "\n";
+    // Sell if MACD - Signal < 0
+    return 0;
   }
-  return 1;
 }
 
 /**
@@ -172,7 +166,7 @@ function calculateEMA($data, $emaParam, $priceIndex)
   {
     if($priceIndex > $emaParam - 1)
     {
-      if($priceIndex > - 1)
+      if($priceIndex-1 > - 1)
       {
         calculateEMA($data, $emaParam - 1, $priceIndex);
 
