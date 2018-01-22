@@ -29,4 +29,17 @@ cp security-example.php security.php
 - In security.php you will also be able to choose the coins you want to watch by updating "getCoins()" as well as the coin you want to compare it to "getCompareCoinTo()"
 
 
+## Roadmap
+
+Jan 2018:
+- Finish Issues CC1 - CC7 and possibly incorporate many more indicators
+
+Feb 2018:
+- Incorporate real trading strategies and incorporate the necessary indicators
+
+March 2018:
+- Incorporate popular exchange API's such as Binance, Bitfinex, Kucoin, and HITBtc and many others
+
+April 2018:
+- Start using trading strategies to make automatic trades on cryptocurrency exchanges
 
