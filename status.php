@@ -2,6 +2,7 @@
 include_once('./bitfinex.php');
 include_once('./lib/macd.php');
 include_once('./lib/rsi.php');
+include_once('./lib/obv.php');
 include_once('./security.php');
 
 $coin = "ETH";
