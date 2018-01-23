@@ -4,6 +4,8 @@ This bot is still in progress. Right now only MACD and RSI values are incorporat
 
 As a regular crypto currency trader I find myself analyzing way too many cryptocurrencies. At the moment this bot is manual because utilizing only RSI/MACD values is not reliable enough to make an automatic trade. However, this bot can be run via cron jobs to automatically send you an SMS notification if your coins are showing good signals using the NEXMO API.
 
+As this bot becomes more versatile in terms of indicators, trading strategies etc.. I want to develop a REST API other people can call to use in their development!
+
 ## Setup
 
 ### Step 1) Requirements
