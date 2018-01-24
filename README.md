@@ -4,6 +4,8 @@ This bot is still in progress. Right now only MACD and RSI values are incorporat
 
 As a regular crypto currency trader I find myself analyzing way too many cryptocurrencies. At the moment this bot is manual because utilizing only RSI/MACD values is not reliable enough to make an automatic trade. However, this bot can be run via cron jobs to automatically send you an SMS notification if your coins are showing good signals using the NEXMO API.
 
+As this bot becomes more versatile in terms of indicators, trading strategies etc.. I want to develop a REST API other people can call to use in their development!
+
 ## Setup
 
 ### Step 1) Requirements
@@ -18,6 +20,13 @@ In your console run:
 git clone https://github.com/sjason19/crypto-currency-manual-trader-bot.git
 cd crypto-currency-manual-trader-bot
 ```
+
+Install dependencies with Composer
+```
+curl -sS https://getcomposer.org/installer | php 
+php composer.phar install
+```
+
 Now time to set up your configurations and API keys:
 ```
 cp security-example.php security.php
