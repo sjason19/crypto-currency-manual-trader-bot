@@ -4,7 +4,7 @@
 *
 * Function to calculate the OBV (On Balance Volume)
 *
-* @param string $data    Historical close pricing data
+* @param string $data    Historical close pricing and volume data
 * @return mixed
 */
 $CURRENT_CLOSE = 0;

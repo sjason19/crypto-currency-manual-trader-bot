@@ -18,10 +18,12 @@ $PRICE = "price";
 
 $coin = "ETH";
 $PERIOD = 100;
+$OBV_PERIOD = 21;
 
 // Fetch Coin Information
 $client = new Client(['base_uri' => $BASE_URL, 'timeout'  => 3.0,]);
 $qry_str_day_hist = "?fsym=$coin&tsym=BTC&limit=$PERIOD&e=CCCAGG";
+$qry_str_day_hist_obv = "?fsym=$coin&tsym=BTC&limit=$OBV_PERIOD&e=CCCAGG";
 $response = $client->request('GET', $DAY_HIST . $qry_str_day_hist);
 $content = json_decode($response->getBody(), true);
 
@@ -32,6 +34,9 @@ echo "RSI: " . $rsi . "\n";
 // ***** CALCUATING MACD ******
 $macd = calculate_macd($content, $EMA_PARAMS = [12, 26, 9]);
 echo "MACD: " . $macd . "\n";
+
+$response = $client->request('GET', $DAY_HIST . $qry_str_day_hist_obv);
+$content = json_decode($response->getBody(), true);
 
 // ***** CALCUATING OBV ******
 $obv = calculate_obv($content);
@@ -82,7 +87,7 @@ else
   // First Indicator Message
 
   $client = new Client();
-  
+
   $response = $client->post($NEXMO_URL, [
     GuzzleHttp\RequestOptions::JSON => [
       'api_key' => $api_key,
@@ -94,7 +99,7 @@ else
   ]);
 
   sleep(1);
-  
+
   $response = $client->post($NEXMO_URL, [
     GuzzleHttp\RequestOptions::JSON => [
       'api_key' => $api_key,
