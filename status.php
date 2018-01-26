@@ -22,10 +22,11 @@ $PRICE = "price";
 
 for ($i=0; $i < sizeof($coins); $i++)
 {
+  $coin = $coins[$i];
 // Fetch Coin Information
 $client = new Client(['base_uri' => $BASE_URL, 'timeout'  => 3.0,]);
-$qry_str_day_hist = "?fsym=$coins[$i]&tsym=BTC&limit=$PERIOD&e=CCCAGG";
-$qry_str_day_hist_obv = "?fsym=$coins[$i]&tsym=BTC&limit=$OBV_PERIOD&e=CCCAGG";
+$qry_str_day_hist = "?fsym=$coin&tsym=BTC&limit=$PERIOD&e=CCCAGG";
+$qry_str_day_hist_obv = "?fsym=$coin&tsym=BTC&limit=$OBV_PERIOD&e=CCCAGG";
 $response = $client->request('GET', $DAY_HIST . $qry_str_day_hist);
 $content = json_decode($response->getBody(), true);
 
@@ -46,7 +47,7 @@ $content = json_decode($response->getBody(), true);
 
 
 // Fetch Coin price
-$qry_str_price = "?fsym=$coins[$i]&tsyms=USD";
+$qry_str_price = "?fsym=$coin&tsyms=USD";
 $response = $client->request('GET', $PRICE . $qry_str_price);
 $coin_price =  json_decode($response->getBody(), true)["USD"];
 echo "COIN PRICE API: $API_URL_PRICE" . $coin_price . "\n";
@@ -55,28 +56,28 @@ echo "COIN PRICE API: $API_URL_PRICE" . $coin_price . "\n";
 // Sell if RSI > 60 MACD == 0
 if ($rsi < 30)
 {
-  $message = "RSI Indicator showing good signals to buy: " . $coins[$i] . " ($" . $price . ")" . "\n";
+  $message = "RSI Indicator showing good signals to buy: " . $coin . " ($" . $coin_price . ")" . "\n";
 }
 else if ($rsi > 60)
 {
-  $message = "RSI Indicator showing good signals to sell: " . $coins[$i] . " ($" . $price . ")" . "\n";
+  $message = "RSI Indicator showing good signals to sell: " . $coin . " ($" . $coin_price . ")" . "\n";
 }
 else
 {
-  $message = "RSI Indicator not showing any buy/sell signals: " . $coins[$i] . " ($" . $price . ")" . "\n";
+  $message = "RSI Indicator not showing any buy/sell signals: " . $coin . " ($" . $coin_price . ")" . "\n";
 }
 
 if ($macd == 1)
 {
-  $message1 = "MACD Indicator showing good signals to buy: " . $coins[$i] . " ($" . $price . ")" . "\n";
+  $message1 = "MACD Indicator showing good signals to buy: " . $coin . " ($" . $coin_price . ")" . "\n";
 }
 else if ($macd == 0)
 {
-  $message1 = "MACD Indicator showing good signals to sell: " . $coins[$i] . " ($" . $price . ")" . "\n";
+  $message1 = "MACD Indicator showing good signals to sell: " . $coin . " ($" . $coin_price . ")" . "\n";
 }
 else
 {
-  $message1 = "MACD Indicator not showing any buy/sell signals: " . $coins[$i] . " ($" . $price . ")" . "\n";
+  $message1 = "MACD Indicator not showing any buy/sell signals: " . $coin . " ($" . $coin_price . ")" . "\n";
 }
 
 
