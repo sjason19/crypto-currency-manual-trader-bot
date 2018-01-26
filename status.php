@@ -6,11 +6,45 @@ include_once('./bitfinex.php');
 include_once('./lib/macd.php');
 include_once('./lib/rsi.php');
 include_once('./lib/obv.php');
-include_once('./security.php');
+include_once('./Configuration.php');
+
+$coins = [];
+
+echo "What coin would you like to analyze? Enter ticker to continue (ie: ETH): " . "\n";
+$handle = fopen ("php://stdin","r");
+$line = fgets($handle);
+if(strlen(trim($line)) > 5){
+    echo "Invalid Ticker!\n";
+    return;
+}
+else
+{
+  $coins[] = $line;
+}
+echo "\n";
+
+while(1)
+{
+  echo "Enter next coin (Press enter if finished): " . "\n";
+  $handle = fopen ("php://stdin","r");
+  $line = fgets($handle);
+  if(strlen(trim($line)) > 5){
+      echo "Invalid Ticker! Please Retry\n";
+  }
+  else
+  {
+    $coins[] = $line;
+  }
+  if(strlen(trim($line)) == 0){
+      break;
+  }
+}
+echo "\n";
+echo "Thank you, continuing...\n";
 
 $phone = getPhone();
 $virtual = getVirtual();
-$coins = getCoins();
+//$coins = getCoins();
 $PERIOD = 100;
 $OBV_PERIOD = 21;
 
