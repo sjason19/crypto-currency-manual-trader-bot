@@ -29,13 +29,12 @@ php composer.phar install
 
 Now time to set up your configurations and API keys:
 ```
-cp security-example.php security.php
+cp Configuration-example.php Configuration.php
 ```
 
-- View and edit `security.php`.
+- View and edit `Configuration.php`.
 - You must add your Nexmo API to enable SMS notifications.
 - Sign up for API keys: [https://dashboard.nexmo.com/sign-up](https://dashboard.nexmo.com/sign-up) & enter the keys, your phone number and the virtual phone number (given by NEXMO) into security.php
-- In security.php you will also be able to choose the coins you want to watch by updating "getCoins()" as well as the coin you want to compare it to "getCompareCoinTo()"
 
 
 ## Roadmap
