@@ -13,7 +13,9 @@ $coins = [];
 echo "What coin would you like to analyze? Enter ticker to continue (ie: ETH): " . "\n";
 $handle = fopen ("php://stdin","r");
 $line = fgets($handle);
-if(strlen(trim($line)) > 5){
+$line = rtrim($line, "\r\n");
+if(strlen(trim($line)) > 5)
+{
     echo "Invalid Ticker!\n";
     return;
 }
@@ -28,7 +30,9 @@ while(1)
   echo "Enter next coin (Press enter if finished): " . "\n";
   $handle = fopen ("php://stdin","r");
   $line = fgets($handle);
-  if(strlen(trim($line)) > 5){
+  $line = rtrim($line, "\r\n");
+  if(strlen(trim($line)) > 5)
+  {
       echo "Invalid Ticker! Please Retry\n";
   }
   else
@@ -40,12 +44,24 @@ while(1)
   }
 }
 echo "\n";
+
+echo "What coin would you to compare this to (ie: BTC, USD): " . "\n";
+$handle = fopen ("php://stdin","r");
+$line = fgets($handle);
+$line = rtrim($line, "\r\n");
+if(strlen(trim($line)) > 5)
+{
+    echo "Invalid Ticker!\n";
+    return;
+}
+else
+{
+  $compare_coin = $line;
+}
+echo "\n";
 echo "Thank you, continuing...\n";
-echo $coins[0] . "\n";
 
 $config = new Configuration();
-$phone = $config->getPhone();
-$virtual = $config->getVirtual();
 $PERIOD = 100;
 $OBV_PERIOD = 21;
 
@@ -54,18 +70,19 @@ $DAY_HIST = "histoday";
 $PRICE = "price";
 
 sleep(1);
-// $coin = "ETH"
 
-for ($i=0; $i < sizeof($coins); $i++)
+for ($i=0; $i < sizeof($coins)-1; $i++)
 {
-  $coin = $coins[$i];
+$coin = $coins[$i];
+echo "==================" . "\n";
+echo "CALCULATING RESULTS FOR: " . $coin . "\n";
+echo "==================" . "\n";
 // Fetch Coin Information
 $client = new Client(['base_uri' => $BASE_URL, 'timeout'  => 3.0,]);
-$qry_str_day_hist = "?fsym=$coin&tsym=BTC&limit=$PERIOD&e=CCCAGG";
-$qry_str_day_hist_obv = "?fsym=$coin&tsym=BTC&limit=$OBV_PERIOD&e=CCCAGG";
+$qry_str_day_hist = "?fsym=$coin&tsym=$compare_coin&limit=$PERIOD&e=CCCAGG";
+$qry_str_day_hist_obv = "?fsym=$coin&tsym=$compare_coin&limit=$OBV_PERIOD&e=CCCAGG";
 $response = $client->request('GET', $DAY_HIST . $qry_str_day_hist);
 $content = json_decode($response->getBody(), true);
-echo $content;
 
 // ***** CALCUATING RSI ******
 $rsi = calculate_rsi($content);
@@ -83,7 +100,7 @@ $content = json_decode($response->getBody(), true);
 // echo "OBV: " . $obv . "\n";
 
 // Fetch Coin price
-$qry_str_price = "?fsym=$coin&tsyms=USD";
+$qry_str_price = "?fsym=$coin&tsyms=$compare_coin";
 $response = $client->request('GET', $PRICE . $qry_str_price);
 $coin_price =  json_decode($response->getBody(), true)["USD"];
 echo "COIN PRICE API: $API_URL_PRICE" . $coin_price . "\n";
@@ -120,7 +137,9 @@ else
   // SMS alert
   $api_key = $config->getKey();
   $api_secret = $config->getSecret();
+  $phone = $config->getPhone();
   $virtual = $config->getVirtual();
+
   $NEXMO_URL = 'https://rest.nexmo.com/sms/json';
 
   // First Indicator Message
