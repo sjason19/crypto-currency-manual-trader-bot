@@ -6,11 +6,62 @@ include_once('./bitfinex.php');
 include_once('./lib/macd.php');
 include_once('./lib/rsi.php');
 include_once('./lib/obv.php');
-include_once('./security.php');
+include_once('./Configuration.php');
 
-$phone = getPhone();
-$virtual = getVirtual();
-$coins = getCoins();
+$coins = [];
+
+echo "What coin would you like to analyze? Enter ticker to continue (ie: ETH): " . "\n";
+$handle = fopen ("php://stdin","r");
+$line = fgets($handle);
+$line = rtrim($line, "\r\n");
+if(strlen(trim($line)) > 5)
+{
+    echo "Invalid Ticker!\n";
+    return;
+}
+else
+{
+  $coins[] = $line;
+}
+echo "\n";
+
+while(1)
+{
+  echo "Enter next coin (Press enter if finished): " . "\n";
+  $handle = fopen ("php://stdin","r");
+  $line = fgets($handle);
+  $line = rtrim($line, "\r\n");
+  if(strlen(trim($line)) > 5)
+  {
+      echo "Invalid Ticker! Please Retry\n";
+  }
+  else
+  {
+    $coins[] = $line;
+  }
+  if(strlen(trim($line)) == 0){
+      break;
+  }
+}
+echo "\n";
+
+echo "What coin would you to compare this to (ie: BTC, USD): " . "\n";
+$handle = fopen ("php://stdin","r");
+$line = fgets($handle);
+$line = rtrim($line, "\r\n");
+if(strlen(trim($line)) > 5)
+{
+    echo "Invalid Ticker!\n";
+    return;
+}
+else
+{
+  $compare_coin = $line;
+}
+echo "\n";
+echo "Thank you, continuing...\n";
+
+$config = new Configuration();
 $PERIOD = 100;
 $OBV_PERIOD = 21;
 
@@ -18,15 +69,18 @@ $BASE_URL = "https://min-api.cryptocompare.com/data/";
 $DAY_HIST = "histoday";
 $PRICE = "price";
 
-// $coin = "ETH"
+sleep(1);
 
-for ($i=0; $i < sizeof($coins); $i++)
+for ($i=0; $i < sizeof($coins)-1; $i++)
 {
-  $coin = $coins[$i];
+$coin = $coins[$i];
+echo "==================" . "\n";
+echo "CALCULATING RESULTS FOR: " . $coin . "\n";
+echo "==================" . "\n";
 // Fetch Coin Information
 $client = new Client(['base_uri' => $BASE_URL, 'timeout'  => 3.0,]);
-$qry_str_day_hist = "?fsym=$coin&tsym=BTC&limit=$PERIOD&e=CCCAGG";
-$qry_str_day_hist_obv = "?fsym=$coin&tsym=BTC&limit=$OBV_PERIOD&e=CCCAGG";
+$qry_str_day_hist = "?fsym=$coin&tsym=$compare_coin&limit=$PERIOD&e=CCCAGG";
+$qry_str_day_hist_obv = "?fsym=$coin&tsym=$compare_coin&limit=$OBV_PERIOD&e=CCCAGG";
 $response = $client->request('GET', $DAY_HIST . $qry_str_day_hist);
 $content = json_decode($response->getBody(), true);
 
@@ -45,9 +99,8 @@ $content = json_decode($response->getBody(), true);
 // $obv = calculate_obv($content);
 // echo "OBV: " . $obv . "\n";
 
-
 // Fetch Coin price
-$qry_str_price = "?fsym=$coin&tsyms=USD";
+$qry_str_price = "?fsym=$coin&tsyms=$compare_coin";
 $response = $client->request('GET', $PRICE . $qry_str_price);
 $coin_price =  json_decode($response->getBody(), true)["USD"];
 echo "COIN PRICE API: $API_URL_PRICE" . $coin_price . "\n";
@@ -82,13 +135,14 @@ else
 
 
   // SMS alert
-  $api_key = getKey();
-  $api_secret = getSecret();
-  $virtual = getVirtual();
+  $api_key = $config->getKey();
+  $api_secret = $config->getSecret();
+  $phone = $config->getPhone();
+  $virtual = $config->getVirtual();
+
   $NEXMO_URL = 'https://rest.nexmo.com/sms/json';
 
   // First Indicator Message
-
   $client = new Client();
 
   $response = $client->post($NEXMO_URL, [
@@ -103,6 +157,7 @@ else
 
   sleep(1);
 
+  // Second Indicator Message
   $response = $client->post($NEXMO_URL, [
     GuzzleHttp\RequestOptions::JSON => [
       'api_key' => $api_key,
