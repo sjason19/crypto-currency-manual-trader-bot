@@ -46,17 +46,24 @@ while(1)
 echo "\n";
 
 echo "What coin would you to compare this to (ie: BTC, USD): " . "\n";
-$handle = fopen ("php://stdin","r");
-$line = fgets($handle);
-$line = rtrim($line, "\r\n");
-if(strlen(trim($line)) > 5)
+while(1)
 {
-    echo "Invalid Ticker!\n";
-    return;
-}
-else
-{
-  $compare_coin = $line;
+  $handle = fopen ("php://stdin","r");
+  $line = fgets($handle);
+  $line = rtrim($line, "\r\n");
+  if(strlen(trim($line)) > 5)
+  {
+      echo "Invalid Ticker!\n";
+  }
+  elseif(strlen(trim($line)) == 0)
+  {
+    echo "You didn't enter any coin, please try again: " . "\n";
+  }
+  else
+  {
+    $compare_coin = $line;
+    break;
+  }
 }
 echo "\n";
 echo "Thank you, continuing...\n";
@@ -102,7 +109,7 @@ $content = json_decode($response->getBody(), true);
 // Fetch Coin price
 $qry_str_price = "?fsym=$coin&tsyms=$compare_coin";
 $response = $client->request('GET', $PRICE . $qry_str_price);
-$coin_price =  json_decode($response->getBody(), true)["USD"];
+$coin_price =  json_decode($response->getBody(), true)[$compare_coin];
 echo "COIN PRICE API: $API_URL_PRICE" . $coin_price . "\n";
 
 // Buy if RSI < 30 AND MACD == 1
