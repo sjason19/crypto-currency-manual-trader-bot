@@ -103,8 +103,8 @@ $response = $client->request('GET', $DAY_HIST . $qry_str_day_hist_obv);
 $content = json_decode($response->getBody(), true);
 
 // ***** CALCUATING OBV ******
-// $obv = calculate_obv($content);
-// echo "OBV: " . $obv . "\n";
+$obv = calculate_obv($content);
+echo "OBV: " . $obv . "\n";
 
 // Fetch Coin price
 $qry_str_price = "?fsym=$coin&tsyms=$compare_coin";
