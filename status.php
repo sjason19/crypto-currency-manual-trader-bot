@@ -85,7 +85,7 @@ echo "==================" . "\n";
 echo "CALCULATING RESULTS FOR: " . $coin . "\n";
 echo "==================" . "\n";
 // Fetch Coin Information
-$client = new Client(['base_uri' => $BASE_URL, 'timeout'  => 3.0,]);
+$client = new Client(['base_uri' => $BASE_URL]);
 $qry_str_day_hist = "?fsym=$coin&tsym=$compare_coin&limit=$PERIOD&e=CCCAGG";
 $qry_str_day_hist_obv = "?fsym=$coin&tsym=$compare_coin&limit=$OBV_PERIOD&e=CCCAGG";
 $response = $client->request('GET', $DAY_HIST . $qry_str_day_hist);
