@@ -21,10 +21,16 @@ git clone https://github.com/sjason19/crypto-currency-manual-trader-bot.git
 cd crypto-currency-manual-trader-bot
 ```
 
-Install dependencies with Composer
+[MAC] Install dependencies with Composer
 ```
 curl -sS https://getcomposer.org/installer | php 
 php composer.phar install
+```
+
+[WINDOWS] Install dependencies with Composer
+```
+[Download Composer.exe](https://getcomposer.org/download/)
+composer install 
 ```
 
 Now time to set up your configurations and API keys:
