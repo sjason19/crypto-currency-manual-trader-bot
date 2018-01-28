@@ -29,7 +29,7 @@ php composer.phar install
 
 [WINDOWS] Install dependencies with Composer
 ```
-[Download Composer.exe](https://getcomposer.org/download/)
+Download Composer.exe: https://getcomposer.org/download/
 composer install 
 ```
 
