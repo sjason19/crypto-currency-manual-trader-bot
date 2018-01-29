@@ -48,12 +48,8 @@ function calculate_rsi($data)
   for($i=1; $i<11; $i++)
   {
     $prev = $i - 1;
-    $um_c1 = $avg_upward_movement[$prev] * (13);
-    $um_c2 = $upward_movement[$i + 14];
-    $dm_c1 = $avg_downward_movement[$prev] * (13);
-    $dm_c2 = $downward_movement[$i + 14];
-    $avg_upward_movement[] = ($um_c1 + $um_c2) / 14;
-    $avg_downward_movement[] = ($dm_c1 + $dm_c2) / 14;
+    $avg_upward_movement[] = ($avg_upward_movement[$prev] * (13) + $upward_movement[$i + 14]) / 14;
+    $avg_downward_movement[] = ($avg_downward_movement[$prev] * (13) + $downward_movement[$i + 14]) / 14;
     echo $avg_upward_movement[$prev] . "   " . $avg_downward_movement[$prev] . "\n";
   }
   echo "\n";
